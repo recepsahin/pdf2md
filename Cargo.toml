@@ -1,0 +1,24 @@
+[package]
+name = "pdf2md"
+version = "0.2.0"
+edition = "2021"
+description = "Yerel çalışan, konsol tabanlı PDF -> Markdown çevirici (tablo destekli)"
+
+[features]
+default = ["layout"]
+# Konum tabanlı çıkarım: tablolar + üst/alt bilgi temizliği. Derleme sorunu olursa:
+#   cargo build --release --no-default-features   (eski, yalnızca metin tabanlı sürüm)
+layout = ["dep:lopdf"]
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+pdf-extract = "0.7"
+# pdf-extract'ın kullandığı lopdf ile AYNI sürüm olmalı. "*" + mevcut Cargo.lock, kilitli
+# sürümü yeniden kullanır. Tür uyuşmazlığı hatası olursa: `cargo tree -i lopdf` ile sürümü
+# öğrenip buraya yaz (örn. "=0.31.0").
+lopdf = { version = "*", default-features = false, optional = true }
+
+[profile.release]
+opt-level = 3
+lto = true
